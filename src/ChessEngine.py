@@ -13,22 +13,22 @@ class GameState():
             ["--", "--", "--", "--", "--", "--", "--", "--"], # Row:5 
             ["wp", "wp", "wp", "wp", "wp", "wp", "wp", "wp"], # Row:6 
             ["wR", "wN", "wB", "wQ", "wK", "wB", "wN", "wR"]] # Row:7 
-        self.whiteToMove = True
-        self.moveLog = []
+        self.whiteToMove = True # Booleen switch for move
+        self.moveLog = [] # Holds all moves functions append
 
         self.moveFunctions = {"p":self.getPawnMoves, "R":self.getRookMoves, "N":self.getKnightMoves, 
                               "B":self.getBishopMoves, "Q":self.getQueenMoves, 'K':self.getKingMoves}
 
-    ### Takes in data from move and executes it. ###
     def makeMove(self, move):
+	''' Takes in data from move and executes it.'''
         self.board[move.startRow][move.startCol] = "--" # Capture Piece will not work with castling or pawn promotion. 
         self.board[move.endRow][move.endCol] = move.pieceMoved # Move piece  
         print(move.pieceMoved) # Print where piece moved
         self.moveLog.append(move) # Log the move 
         self.whiteToMove = not self.whiteToMove # Change move turn 
 
-    ### Undoes a move #### 
     def undoMove(self):
+	''' Z mapped to undo move also, changes move log and turn. '''
         if len(self.moveLog) != 0: # Make sure this is not first turn, since we cannot undo anything that isn't moved  
             move = self.moveLog.pop() # Remove last move from move log 
             self.board[move.startRow][move.startCol] = move.pieceMoved # Move piece back 
