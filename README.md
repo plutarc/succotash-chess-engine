@@ -1,2 +1,2 @@
 # succotash-chess-engine
-NEAT Chess Engine. writen in python for now 
+NEAT Chess Engine. Written in python for now 
