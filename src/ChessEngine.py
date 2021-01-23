@@ -40,7 +40,9 @@ class GameState():
         return self.getAllPossibleMoves()                               # Return call to getAllPossibleMoves.
 
     def getAllPossibleMoves(self):
-        ''' Get all possible moves for each piece'''
+        ''' Get all possible moves for each piece
+            Calls functions for each piece when
+            iterating through the board with dict'''
         moves = []                                                      # Holds list of all possible moves
         for r in range(len(self.board)):                                # iterate through all rows
             for c in range(len(self.board[r])):                         # Iterate through all columns
@@ -53,33 +55,47 @@ class GameState():
 
 
     def getPawnMoves(self, r, c, moves):                                # Get all possible pawn moves appends these to possible moves list.
+        ''' Get all Knight moves. '''
         if self.whiteToMove:    # * White to move. *
-            if self.board[r-1][c] == "--":                              # Checking to make sure white's 1+ forward square is empty.
-                moves.append(Move((r, c), (r-1, c), self.board))        # Append to available moves list.
-                if r == 6 and self.board[r-2][c] == "--":               # Checking pawns are on starting squares and +2 forward square is empty.
-                    moves.append(Move((r, c), (r-2, c), self.board))    # Append to available moves list.
 
-                                # Pawn right and left #
+            if self.board[r-1][c] == "--":                              # Checking to make sure white's 1+ forward square is empty.
+                moves.append(Move(                                      # Append to available moves list.
+                    (r, c), (r-1, c), self.board))
+
+                if r == 6 and self.board[r-2][c] == "--":               # Checking pawns are on starting squares and +2 forward square is empty.
+                    moves.append(Move(                                  # Append to available moves list.
+                        (r, c), (r-2, c), self.board))
+                                                                        # Pawn right and left #
             if c-1 >= 0:                                                # Left limit insuring we do not go off board.
                 if self.board[r-1][c-1][0] == "b":                      # Checking if black's enemy piece, is on a left diagonal to this piece.
-                    moves.append(Move((r, c), (r-1, c-1), self.board))  # Append to available moves list.
+                    moves.append(Move(                                  # Append to available moves list.
+                        (r, c), (r-1, c-1), self.board))
+
             if c+1 <= 7:                                                # Right Limit
                 if self.board[r-1][c+1][0] == "b":                      # Checking if black's enemy piece, is on a left diagonal to this piece.
-                    moves.append(Move((r, c), (r-1, c+1), self.board))  # Append to available moves list.
+                    moves.append(Move(                                  # Append to available moves list.
+                        (r, c), (r-1, c+1), self.board))
 
-        else:                   # * Black to move. *
+        else:                                                           # * BLACK TO MOVE. *
+
             if self.board[r+1][c] == "--":                              # Checking to make sure black's 1+ forward square is empty.
-                moves.append(Move((r, c), (r+1, c), self.board))        # Append to available moves list.
-                if r==1 and self.board[r+2][c] == "--":                 # Checking pawns are on starting squares and +2 forward square is empty.
-                    moves.append(Move((r, c), (r+2, c), self.board))    # Append to available moves list.
+                moves.append(Move(                                      # Append to available moves list.
+                    (r, c), (r+1, c), self.board))
 
-                                # Pawn right and left #
+                if r==1 and self.board[r+2][c] == "--":                 # Checking pawns are on starting squares and +2 forward square is empty.
+                    moves.append(Move(                                  # Append to available moves list.
+                        (r, c), (r+2, c), self.board))
+
+                                                                        # Pawn right and left #
             if c-1 >= 0:                                                # Right limit insuring we do not go off board
                 if self.board[r+1][c-1][0] == "w":                      # If white enemy piece is on a right diagonal to this piece
-                    moves.append(Move((r, c), (r+1, c-1), self.board))  # Append to available moves list.
+                    moves.append(Move(                                  # Append to available moves list.
+                        (r, c), (r+1, c-1), self.board))
+
             if c+1 <= 7:                                                # Left limit insuring we do not go off board
                 if self.board[r+1][c+1][0] == "w":                      # If enemy piece is on a reft diagonal to this piece
-                    moves.append(Move((r, c), (r+1, c+1), self.board))  # Append to available moves list.
+                    moves.append(Move(                                  # Append to available moves list.
+                        (r, c), (r+1, c+1), self.board))
 
 
     def getRookMoves(self, r, c, moves):
@@ -89,7 +105,6 @@ class GameState():
                 (0, -1),        # 2 : (down)
                 (1,  0),        # 3 : (right
                 (0,  1))        # 4 : (up)
-
         enemyColor = "b" if self.whiteToMove else "w"                   # Setting enemy color, maybe we can find a better way? TODO
         print(f"ROOK: Location {r, c} enemcy color is {enemyColor}")    # Print statement for *DEBUGGING.*
         for d in rookDirections:
@@ -106,7 +121,8 @@ class GameState():
                         moves.append(Move(
                             (r, c), (endRow, endCol), self.board))
                     elif endPiece[0] == enemyColor:
-                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        moves.append(Move(
+                            (r, c), (endRow, endCol), self.board))
                         break
                     else: # Friendly piece.
                         print("break friendly piece")
@@ -117,7 +133,7 @@ class GameState():
 
 
     def getKnightMoves(self, r, c, moves):
-
+        ''' Get all Knight moves. '''
         knightDirections = (    # * White's perspective *
                 (-2, -1),       # 1
                 (-2,  1),       # 2
@@ -139,9 +155,9 @@ class GameState():
                 print(f"Hello endpiece!: {endPiece}")
                 if endPiece[0] != allyColor:
                     moves.append(Move((r, c), (endRow, endCol), self.board))
-                    print("can move knight!")
 
     def getBishopMoves(self, r, c, moves):
+        ''' Get all Bishop moves. '''
 
         bishopDirections = (    # *White's Perspective*
                 (-1, -1),       # 1 : (left, up)
@@ -162,9 +178,11 @@ class GameState():
                 if 0 <= endRow < 8 and 0 <= endCol < 8: # Checking we're on the board
                     endPiece = self.board[endRow][endCol]
                     if endPiece == "--": # Empty space valid
-                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        moves.append(Move(
+                            (r, c), (endRow, endCol), self.board))
                     elif endPiece[0] == enemyColor: # Enemy piece valid move
-                        moves.append(Move((r, c), (endRow, endCol), self.board))
+                        moves.append(Move(
+                            (r, c), (endRow, endCol), self.board))
                         break
                     else: # Friendly piece not a valid move.
                         print("Break friendly piece")
@@ -175,10 +193,33 @@ class GameState():
 
 
     def getQueenMoves(self, r, c, moves):
-        pass
+        ''' Get all Queen moves. '''
+        self.getRookMoves(r, c, moves)                          # Since the queen is essentially just a rook and a bishop, we can just call those functions.
+        self.getBishopMoves(r, c, moves)
+
 
     def getKingMoves(self, r, c, moves):
-        pass
+        ''' Get all King moves. '''
+        kingMoves = (
+                (-1, -1),
+                (-1,  0),
+                (-1,  1),
+                (0,  -1),
+                (0,   1),
+                (1,  -1),
+                (1,   0),
+                (1,   1))
+        allyColor = "w" if self.whiteToMove else "b"
+        for i in range(8):
+            endRow = r + kingMoves[i][0]
+            endCol = c + kingMoves[i][1]
+            if 0 <= endRow < 8 and 0 <= endCol < 8:
+                endPiece = self.board[endRow][endCol]
+                if endPiece[0] != allyColor:
+                    moves.append(Move(
+                        (r, c), (endRow, endCol), self.board))
+
+
 
 
 
@@ -190,8 +231,8 @@ class Move():
     filesToCols = { "a": 0, "b": 1, "c": 2, "d": 3,
                     "e": 4, "f": 5, "g": 6, "h": 7 }
 
-    rowsToRanks = {v: k for k, v in ranksToRows.items()} # Changes rows to ranks based on dictionary above.
-    colsToFiles = {v: k for k, v in filesToCols.items()} # Changes cols to files based on dictionary above.
+    rowsToRanks = {v: k for k, v in ranksToRows.items()}        # Changes rows to ranks based on dictionary above.
+    colsToFiles = {v: k for k, v in filesToCols.items()}        # Changes cols to files based on dictionary above.
 
 
     def __init__(self, startSq, endSq, board):
