@@ -1,20 +1,20 @@
 import pygame as p
 import ChessEngine
 
-# Globals
 
 WIDTH = HEIGHT = 512
 DIMENSION = 8 # Defining 8x8 Chess Board
 SQ_SIZE = HEIGHT // DIMENSION
 MAX_FPS = 15 # Global refresh rate
 
-IMAGES = {} # Intitalizing Dict to hold loaded images.
+IMAGES = {}                                                     # Intitalizing Dict to hold loaded images.
 
 def loadImages():
     """ Run only once but loads images into IMAGES global Dict. """
 
-    pieces = ["bB", "bK", "bN", 'bp', "bQ", "bR", "wB", "wK", "wN", "wp", "wQ", "wR"] # List of images
-    for piece in pieces: # Looping and loading image list on startup
+    pieces = ["bB", "bK", "bN", 'bp', "bQ", "bR",               # List of image names.
+              "wB", "wK", "wN", "wp", "wQ", "wR"]
+    for piece in pieces:                                        # Looping and loading image list on startup
         IMAGES[piece] = p.transform.scale(p.image.load(f"chess_images/{piece}.png"), (SQ_SIZE, SQ_SIZE)) # Properly sizing and loading logic
     print("Images Loaded")
 
@@ -22,35 +22,35 @@ def loadImages():
 def main():
     """ Main logic for Game """
 
-    p.init() # Initialize for pygame
+    p.init()                                                    # Initialize for pygame
 
-    screen = p.display.set_mode((WIDTH, HEIGHT)) # Set Screen size for Pygame
-    clock = p.time.Clock() # Init Clock for timing.
-    screen.fill(p.Color("White")) # Temporary Screen fill white
+    screen = p.display.set_mode((WIDTH, HEIGHT))                # Set Screen size for Pygame
+    clock = p.time.Clock()                                      # Init Clock for timing.
+    screen.fill(p.Color("White"))                               # Temporary Screen fill white
 
-    gs = ChessEngine.GameState() # Initialize Game State Object.
-    validMoves = gs.getValidMoves() # # Gets a list of valid moves from game state.
-    moveMade = False # Flag variable for when a move is made by either white or black.
-    loadImages() # Loads images once upon starting.
+    gs = ChessEngine.GameState()                                # Initialize Game State Object.
+    validMoves = gs.getValidMoves()                             # Gets a list of valid moves from game state.
+    moveMade = False                                            # Flag variable for when a move is made by either white or black.
+    loadImages()                                                # Loads images once upon starting.
     mouseClicks = 0
 
-    sqSelected = () # Tuple holds current square selected by (row, col)
-    playerClicks = [] # Holds two tuples [(0, 1), (2, 1)], first tuple is the first player click from starting location second tuple is where player wishes to move. holds two values of sqSelected
+    sqSelected = ()                                             # Tuple holds current square selected by (row, col)
+    playerClicks = []                                           # Holds two tuples [(0, 1), (2, 1)], first tuple is the first player click from starting location secon                                                                 # d tuple is where player wishes to move. holds two values of sqSelected
 
     running = True # Running flag if set to false game quits.
 
-    ### Main Loop ####
+
     print('Initializing Main Loop')
-    while running:
+    while running:                                              # Main init. CLEAN ALL OF THIS UP! TODO
 
         for e in p.event.get():
 
-            if e.type == p.QUIT: # IF* we see a keypress quit change While loop to false.
-                running = False # SET* While LOOP value to False which will quit the program.
+            if e.type == p.QUIT:                                # IF* we see a keypress quit change While loop to false.
+                running = False                 #                SET* While LOOP value to False which will quit the program.
 
-            # Mouse Handler
-            elif e.type == p.MOUSEBUTTONDOWN: # Check for click
-                location = p.mouse.get_pos() # x y Location of the mouse
+                                                                # Mouse Handler
+            elif e.type == p.MOUSEBUTTONDOWN:                   # Check for click
+                location = p.mouse.get_pos()                    # x y Location of the mouse
 
                 if mouseClicks % 2 == 0 and mouseClicks != 1:
                     print("\n")
@@ -63,63 +63,59 @@ def main():
                 if mouseClicks % 2 == 0:
                     print("SECOND ClICK")
 
-                #print(f"Mouse Clicked at: {location}!") # Print location of the mouse to the console
-                col = location[0]//SQ_SIZE # Get Column where clicked when the mouse is pressed dividing by scare size for accuracy.
-                row = location[1]//SQ_SIZE # Get Row where clicked when the mouse is pressed divivding by square size for accuracy.
+                col = location[0]//SQ_SIZE                      # Get Column where clicked when the mouse is pressed dividing by scare size for accuracy.
+                row = location[1]//SQ_SIZE                      # Get Row where clicked when the mouse is pressed divivding by square size for accuracy.
 
-                if sqSelected == (row, col): # User clicked the same square twice. Clear both sqSelected and playerClicks
+                if sqSelected == (row, col):                    # User clicked the same square twice. Clear both sqSelected and playerClicks
                     print(f"    CHECK: FAIL! User *DID* click the same square twice at: {sqSelected}")
                     print(f"        CHECK: FAIL!: SELECTED SAME SQUARE TWICE! sqSelected & playerClicks after at: {playerClicks}")
-                    sqSelected = () # Clear ALL
-                    playerClicks = [] # Clear ALL
-                    print("*CLEARED!*") # Printing that both have been cleared
+                    sqSelected = ()                             # Clear ALL
+                    playerClicks = []                           # Clear ALL
+                    print("*CLEARED!*")                         # Printing that both have been cleared
 
-                else: # If user did not click same square twice find square selected and add to playerClicks
-                    sqSelected = (row, col) # Square selected add row and column of player clicks
+                else:                                           # If user did not click same square twice find square selected and add to playerClicks
+                    sqSelected = (row, col)                     # Square selected add row and column of player clicks
                     print(f"    CHECK!: OK! User did *NOT* click the same square twice at: {sqSelected}")
-                    playerClicks.append(sqSelected) # Append above square selected to player clicks
+                    playerClicks.append(sqSelected)             # Append above square selected to player clicks
                     print(f"        CHECK!: OK! sqSelected appeneded to playerClicks: {playerClicks}")
 
-                if len(playerClicks) == 2: # Make sure the playerClicks size is 2 so that we know it is row and col and not any extra garbage
+                if len(playerClicks) == 2:                      # Make sure the playerClicks size is 2 so that we know it is row and col and not any extra garbage
                     print("             CHECK!: OK!: 2 clicks!")
                     move = ChessEngine.Move(playerClicks[0], playerClicks[1], gs.board) # Call move function from chess engine unpack playerClicks tuple and calls board
                     print(f"Chess Notation: {move.getChessNotation()}")
                     print(f"MOVE: {move}")
 
 
-                    if move in validMoves: # IF* we have a valid move check before making an actual move.
+                    if move in validMoves:                      # IF* we have a valid move check before making an actual move.
                         print(f"    CHECK!: OK!: MOVE from: {playerClicks[0]} to: {playerClicks[1]} *VALID*: \n")
-                        gs.makeMove(move) # Makes move passed move object
-                        moveMade = True # Move made flag to True, so we can call getValidMoves Below without calling every frame.
+                        gs.makeMove(move)                       # Makes move passed move object
+                        moveMade = True                         # Move made flag to True, so we can call getValidMoves Below without calling every frame.
+                        sqSelected = ()                         # After *MOVE* clear *ALL*
+                        playerClicks = []                       # After *MOVE* clear *ALL*
 
-                    else: # Print statement for not valid moves does not effect game
+                    else:
                         print(f"    CHECK!: FAIL!: MOVE from: {playerClicks[0]} to: {playerClicks[1]} *NOT VALID*: \n")
+                        playerClicks = [sqSelected]             # Not sure why this works. TODO
 
-
-                                        # RESET
                     print(f'CHECK!: OK: sqSelected & playerClicks after {playerClicks}')
-                    sqSelected = () # After *MOVE* clear *ALL*
-                    playerClicks = [] # After *MOVE* clear *ALL*
-                    print("*CLEARED!*") # Printing that both have been cleared
+                    print("*CLEARED!*")                         # Printing that both have been cleared
 
                 else:
                     print("            CHECK!: FAIL! not unique 2 clicks")
 
+            elif e.type == p.KEYDOWN:                           # Check for keypress
+                if e.key == p.K_z:                              # IF* keypress is "Z" Undo move
+                    gs.undoMove()                               # Call Undo Move
+                    moveMade = True                             # Reset move made flag to recheck valid moves
 
-
-            elif e.type == p.KEYDOWN: # Check for keypress
-                if e.key == p.K_z: # IF* keypress is "Z" Undo move
-                    gs.undoMove() # Call Undo Move
-                    moveMade = True # Reset move made flag to recheck valid moves
-
-        if moveMade: # When move is made do below
-            validMoves = gs.getValidMoves() # Only generate valid moves when a move is made.
-            moveMade = False # Setting move state flag back to false
+        if moveMade:                                            # When move is made do below
+            validMoves = gs.getValidMoves()                     # Only generate valid moves when a move is made.
+            moveMade = False                                    # Setting move state flag back to false
             print('***MOVE MADE***')
 
-        drawGameState(screen, gs) # Calls two functions to draw board and pieces
-        clock.tick(MAX_FPS)
-        p.display.flip() # No idea
+        drawGameState(screen, gs)                               # Calls two functions to draw board and pieces
+        clock.tick(MAX_FPS)                                     # What? TODO
+        p.display.flip()                                        # No idea WHAT? TODO
 
 
 def drawGameState(screen, gs):
