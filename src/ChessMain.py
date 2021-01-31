@@ -12,12 +12,11 @@ IMAGES = {}                                                     # Intitalizing D
 def loadImages():
     """ Run only once but loads images into IMAGES global Dict. """
 
-    pieces = ["bB", "bK", "bN", 'bp', "bQ", "bR",               # List of image names.
+    pieces = ["bB", "bK", "bN", 'bp', "bQ", "bR",               # List of image names in src folder. 
               "wB", "wK", "wN", "wp", "wQ", "wR"]
     for piece in pieces:                                        # Looping and loading image list on startup
-        IMAGES[piece] = p.transform.scale(p.image.load(f"chess_images/{piece}.png"), (SQ_SIZE, SQ_SIZE)) # Properly sizing and loading logic
-    print("Images Loaded")
-
+        IMAGES[piece] = p.transform.scale(p.image.load(         # Get correct sizing for images. 
+            f"chess_images/{piece}.png"), (SQ_SIZE, SQ_SIZE))
 
 def main():
     """ Main logic for Game """
@@ -32,7 +31,7 @@ def main():
     validMoves = gs.getValidMoves()                             # Gets a list of valid moves from game state.
     moveMade = False                                            # Flag variable for when a move is made by either white or black.
     loadImages()                                                # Loads images once upon starting.
-    mouseClicks = 0
+    mouseClicks = 0                                             # Holds mouse clicks for debuging UI.
 
     sqSelected = ()                                             # Tuple holds current square selected by (row, col)
     playerClicks = []                                           # Holds two tuples [(0, 1), (2, 1)], first tuple is the first player click from starting location secon                                                                 # d tuple is where player wishes to move. holds two values of sqSelected
